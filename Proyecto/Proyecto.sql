@@ -136,7 +136,7 @@ go
 create table AMIGO (
    ID_USUARIO           int                  not null,
    ID_AMIGO             int                  not null,
-   ID_AMISTAD           int                  not null,
+   ID_AMISTAD           int identity(1,1)    not null,
    constraint PK_AMIGO primary key (ID_AMISTAD)
 )
 go
@@ -145,10 +145,10 @@ go
 /* Table: BITACORA                                              */
 /*==============================================================*/
 create table BITACORA (
-   ID_BITACORA          int                  not null,
-   ID_PUBLICACION       int                  null,
-   ID_USUARIO           int                  null,
-   ID_TIPO_ACCION       int                  null,
+   ID_BITACORA          int identity(1,1)    not null,
+   ID_PUBLICACION       int                  not null,
+   ID_USUARIO           int                  not null,
+   ID_TIPO_ACCION       int                  not null,
    FECHA_HORA           datetime             not null,
    constraint PK_BITACORA primary key (ID_BITACORA)
 )
@@ -158,7 +158,7 @@ go
 /* Table: COMENTARIO                                            */
 /*==============================================================*/
 create table COMENTARIO (
-   ID_COMENTARIO        int                  not null,
+   ID_COMENTARIO        int identity(1,1)    not null,
    ID_PUBLICACION_REF   int                  not null,
    ACTIVO               bit                  not null,
    constraint PK_COMENTARIO primary key (ID_COMENTARIO)
@@ -169,7 +169,7 @@ go
 /* Table: DISPOSITIVO                                           */
 /*==============================================================*/
 create table DISPOSITIVO (
-   ID_DISPOSITIVO       int                  not null,
+   ID_DISPOSITIVO       int identity(1,1)    not null,
    NOMBRE               nvarchar(50)         not null,
    constraint PK_DISPOSITIVO primary key (ID_DISPOSITIVO)
 )
@@ -179,10 +179,10 @@ go
 /* Table: PUBLICACION                                           */
 /*==============================================================*/
 create table PUBLICACION (
-   ID_PUBLICACION       int                  not null,
-   ID_DISPOSITIVO       int                  null,
-   ID_TIPO_PUBLICACION  int                  null,
-   ID_USUARIO           int                  null,
+   ID_PUBLICACION       int identity(1,1)    not null,
+   ID_DISPOSITIVO       int                  not null,
+   ID_TIPO_PUBLICACION  int                  not null,
+   ID_USUARIO           int                  not null,
    FECHA_HORA           datetime             not null,
    CONTENIDO            nvarchar(500)        not null,
    IP                   nvarchar(20)         not null,
@@ -194,7 +194,7 @@ go
 /* Table: TIPO_ACCION                                           */
 /*==============================================================*/
 create table TIPO_ACCION (
-   ID_TIPO_ACCION       int                  not null,
+   ID_TIPO_ACCION       int identity(1,1)    not null,
    ACCION               nvarchar(50)         not null,
    constraint PK_TIPO_ACCION primary key (ID_TIPO_ACCION)
 )
@@ -204,7 +204,7 @@ go
 /* Table: TIPO_PUBLICACION                                      */
 /*==============================================================*/
 create table TIPO_PUBLICACION (
-   ID_TIPO_PUBLICACION  int                  not null,
+   ID_TIPO_PUBLICACION  int identity(1,1)    not null,
    TIPO                 nvarchar(50)         not null,
    constraint PK_TIPO_PUBLICACION primary key (ID_TIPO_PUBLICACION)
 )
@@ -214,8 +214,8 @@ go
 /* Table: USUARIO                                               */
 /*==============================================================*/
 create table USUARIO (
-   ID_USUARIO           int                  not null,
-   CORREO               nvarchar(50)         not null,
+   ID_USUARIO           int identity(1,1)    not null,
+   CORREO               nvarchar(50)         unique not null,
    NOMBRE1              nvarchar(50)         not null,
    NOMBRE2              nvarchar(50)         null,
    APELLIDO1            nvarchar(50)         not null,
