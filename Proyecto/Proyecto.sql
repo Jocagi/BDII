@@ -3,132 +3,7 @@
 /* Created on:     18/10/2020 16:33:29                          */
 /*==============================================================*/
 
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('AMIGO') and o.name = 'FK_AMIGO_REFERENCE_USUARIO2')
-alter table AMIGO
-   drop constraint FK_AMIGO_REFERENCE_USUARIO2
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('AMIGO') and o.name = 'FK_AMIGO_REFERENCE_USUARIO')
-alter table AMIGO
-   drop constraint FK_AMIGO_REFERENCE_USUARIO
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('BITACORA') and o.name = 'FK_BITACORA_REFERENCE_PUBLICAC')
-alter table BITACORA
-   drop constraint FK_BITACORA_REFERENCE_PUBLICAC
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('BITACORA') and o.name = 'FK_BITACORA_REFERENCE_USUARIO')
-alter table BITACORA
-   drop constraint FK_BITACORA_REFERENCE_USUARIO
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('BITACORA') and o.name = 'FK_BITACORA_REFERENCE_TIPO_ACC')
-alter table BITACORA
-   drop constraint FK_BITACORA_REFERENCE_TIPO_ACC
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('COMENTARIO') and o.name = 'FK_COMENTAR_REFERENCE_PUBLICAC2')
-alter table COMENTARIO
-   drop constraint FK_COMENTAR_REFERENCE_PUBLICAC2
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('COMENTARIO') and o.name = 'FK_COMENTAR_REFERENCE_PUBLICAC')
-alter table COMENTARIO
-   drop constraint FK_COMENTAR_REFERENCE_PUBLICAC
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('PUBLICACION') and o.name = 'FK_PUBLICAC_REFERENCE_TIPO_PUB')
-alter table PUBLICACION
-   drop constraint FK_PUBLICAC_REFERENCE_TIPO_PUB
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('PUBLICACION') and o.name = 'FK_PUBLICAC_REFERENCE_USUARIO')
-alter table PUBLICACION
-   drop constraint FK_PUBLICAC_REFERENCE_USUARIO
-go
-
-if exists (select 1
-   from sys.sysreferences r join sys.sysobjects o on (o.id = r.constid and o.type = 'F')
-   where r.fkeyid = object_id('PUBLICACION') and o.name = 'FK_PUBLICAC_REFERENCE_DISPOSIT')
-alter table PUBLICACION
-   drop constraint FK_PUBLICAC_REFERENCE_DISPOSIT
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('AMIGO')
-            and   type = 'U')
-   drop table AMIGO
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('BITACORA')
-            and   type = 'U')
-   drop table BITACORA
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('COMENTARIO')
-            and   type = 'U')
-   drop table COMENTARIO
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('DISPOSITIVO')
-            and   type = 'U')
-   drop table DISPOSITIVO
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('PUBLICACION')
-            and   type = 'U')
-   drop table PUBLICACION
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('TIPO_ACCION')
-            and   type = 'U')
-   drop table TIPO_ACCION
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('TIPO_PUBLICACION')
-            and   type = 'U')
-   drop table TIPO_PUBLICACION
-go
-
-if exists (select 1
-            from  sysobjects
-           where  id = object_id('USUARIO')
-            and   type = 'U')
-   drop table USUARIO
-go
+Create Database BookFace
 
 /*==============================================================*/
 /* Table: AMIGO                                                 */
@@ -223,6 +98,7 @@ create table USUARIO (
    FECHA_DE_NACIMIENT   date                 not null,
    CONTRASENA           nvarchar(50)         not null,
    CANT_MAX_AMIGOS      int                  not null,
+   FECHA_CREACION		datetime			not null,
    constraint PK_USUARIO primary key (ID_USUARIO)
 )
 go
