@@ -9,6 +9,9 @@ Create or Alter Procedure uspIngresarComentario
 As
 Begin
 
+	Set transaction isolation level serializable;
+	Begin transaction
+
 	Declare @ComentPublicacion integer;
 	Declare @ID_Comentario integer;
 
@@ -26,7 +29,7 @@ Begin
 	Set @ID_Comentario = SCOPE_IDENTITY();
 
 	-- Validar activo/inactivo
-	IF (@ComentPublicacion < 3)
+	If (@ComentPublicacion < 3)
 		Begin
 			Insert Into COMENTARIO (ID_COMENTARIO, ID_PUBLICACION_REF, ACTIVO)
 			Values (@ID_Comentario, @ID_Publicacion, 1)
@@ -35,6 +38,21 @@ Begin
 		Begin
 			Insert Into COMENTARIO (ID_COMENTARIO, ID_PUBLICACION_REF, ACTIVO)
 			Values (@ID_Comentario, @ID_Publicacion, 0)
+		End
+	
+	-- Actualizar bitacoria
+	Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
+	Values (@ID_Publicacion, @ID_Usuario, 5, GETDATE())
+
+	If @@ERROR = 0
+		Begin
+			Print('Comentario ingresado con exito');
+			commit;
+		End
+	Else
+		Begin
+			Print('Error al ingresar comentario');
+			rollback;
 		End
 End
 

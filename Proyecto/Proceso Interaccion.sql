@@ -49,6 +49,9 @@ Create or Alter Procedure uspIngresarInteraccion
 As
 Begin
 
+	Set transaction isolation level serializable;
+	Begin transaction
+
 	Declare @CantLikeGeneral integer;
 	Declare @CantDislikeGeneral integer;
 
@@ -83,11 +86,13 @@ Begin
 			If (@CantLikeUsuario > 0)
 				Begin
 					Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
-					Values (@ID_Publicacion, @ID_Usuario, 3, GETDATE())
+					Values (@ID_Publicacion, @ID_Usuario, 3, GETDATE());
+					commit;
 				End
 			Else
 				Begin
-					Print('No existen likes para remover')
+					Print('No existen likes para remover');
+					rollback;
 				End
 		End
 	-- Remover Dislike
@@ -96,11 +101,13 @@ Begin
 			If (@CantDislikeUsuario > 0)
 				Begin
 					Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
-					Values (@ID_Publicacion, @ID_Usuario, 4, GETDATE())
+					Values (@ID_Publicacion, @ID_Usuario, 4, GETDATE());
+					commit;
 				End
 			Else
 				Begin
-					Print('No existen dislikes para remover')
+					Print('No existen dislikes para remover');
+					rollback;
 				End
 		End
 	-- Insertar Like o Dislike
@@ -111,25 +118,29 @@ Begin
 					If (@CantLikeUsuario = 0 AND @CantDislikeUsuario = 0)
 						Begin
 								Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
-								Values (@ID_Publicacion, @ID_Usuario, @ID_Accion, GETDATE())
+								Values (@ID_Publicacion, @ID_Usuario, @ID_Accion, GETDATE());
+								commit;
 						End
 					Else
 						Begin
-							Print('El usuario ya ha interactuado con la publicacion')
+							Print('El usuario ya ha interactuado con la publicacion');
+							rollback;
 						End
 				End
 			Else
 				Begin
-					Print('No existen suficientes likes para insertar un nuevo dislike')
+					Print('No existen suficientes likes para insertar un nuevo dislike');
+					rollback;
 				End
 		End
 	Else
 		Begin
-			Print('Interaccion no reconocida')
+			Print('Interaccion no reconocida');
+			rollback;
 		End
 End
 
-exec uspIngresarInteraccion 3, 20, 2
+exec uspIngresarInteraccion 3, 20, 1
 
 Select * from BITACORA
 Where ID_PUBLICACION = 3

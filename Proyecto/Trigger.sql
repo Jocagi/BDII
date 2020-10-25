@@ -1,10 +1,13 @@
 /*
-	Para cada publicación no pueden existir mas de 3 comentarios.
+Solamente puede existir un usuario por correo electrónico y máximo 2 con el mismo nombre (completo).
 */
 
 Create or Alter trigger tiu_ValidarUsuario on USUARIO
 Instead of insert, update
 as
+
+Set transaction isolation level serializable;
+Begin transaction;
 
 Declare @Id int
 Declare @Correo nvarchar(50)
@@ -51,6 +54,7 @@ If (@Cant_Users < 2)
 				Set CORREO = @Correo, NOMBRE1 = @Nombre1, NOMBRE2 = @Nombre2, APELLIDO1 = @Apellido1, APELLIDO2 = @Apellido2, 
 				FECHA_DE_NACIMIENT = @BirthDate, CONTRASENA = @Password, CANT_MAX_AMIGOS = @Amigos
 				Where ID_USUARIO = @Id;
+				commit;
 			End
 		-- INSERT
 		Else		
@@ -59,9 +63,11 @@ If (@Cant_Users < 2)
 				(CORREO, NOMBRE1, NOMBRE2, APELLIDO1, APELLIDO2, FECHA_DE_NACIMIENT, CONTRASENA, CANT_MAX_AMIGOS, FECHA_CREACION)
 				Values
 				(@Correo, @Nombre1, @Nombre2, @Apellido1, @Apellido2, @BirthDate, @Password, 50, GetDate());
+				commit;
 			End
 	End
 Else
 	Begin
-		Print ('No se ha podido realizar la operacion. Maximo de usuarios con el mismo nombre alcanzado.')
+		Print ('No se ha podido realizar la operacion. Maximo de usuarios con el mismo nombre alcanzado.');
+		commit;
 	End
