@@ -65,17 +65,3 @@ Else
 	Begin
 		Print ('No se ha podido realizar la operacion. Maximo de usuarios con el mismo nombre alcanzado.')
 	End
-
-	Delete from USUARIO
-	Select * from USUARIO
-
-	Insert into USUARIO
-				(CORREO, NOMBRE1, APELLIDO1, APELLIDO2, FECHA_DE_NACIMIENT, CONTRASENA, CANT_MAX_AMIGOS, FECHA_CREACION)
-				Values
-				('123', 'Jose','Giron', 'Marquez', '2000-07-16', '123', 50, GETDATE())
-
-				
-	Insert into USUARIO
-				(CORREO, NOMBRE1, APELLIDO1, FECHA_DE_NACIMIENT, CONTRASENA, CANT_MAX_AMIGOS, FECHA_CREACION)
-				Values
-				('12346558971459', 'Karencita','Paiz', '1999-10-01', '123', 50, GETDATE())
