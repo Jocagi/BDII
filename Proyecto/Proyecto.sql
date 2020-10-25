@@ -33,9 +33,9 @@ go
 /* Table: COMENTARIO                                            */
 /*==============================================================*/
 create table COMENTARIO (
-   ID_COMENTARIO        int identity(1,1)    not null,
-   ID_PUBLICACION_REF   int                  not null,
-   ACTIVO               bit                  not null,
+   ID_COMENTARIO        int					not null,
+   ID_PUBLICACION_REF   int                 not null,
+   ACTIVO               bit                 not null,
    constraint PK_COMENTARIO primary key (ID_COMENTARIO)
 )
 go
