@@ -29,6 +29,12 @@
 				Values
 				('josegiron1607@gmail.com', 'Jose', 'Carlos', 'Giron', 'Marquez', '2000-07-16', '123', 50, GetDate());
  
+ Insert into USUARIO
+				(CORREO, NOMBRE1, APELLIDO1, FECHA_DE_NACIMIENT, CONTRASENA, CANT_MAX_AMIGOS, FECHA_CREACION)
+				Values
+				('fhjdkj@gmail.com', 'Andrea', 'Camara', '2000-01-01', '123', 50, GetDate());
+ 
+
  Select * from USUARIO
 
  Select * from TIPO_PUBLICACION
@@ -80,69 +86,111 @@ Begin
 	from BITACORA
 	Where ID_PUBLICACION = @ID_Publicacion
 
-	-- Remover Like
-	If (@ID_Accion = 3)
-		Begin
-			If (@CantLikeUsuario > 0)
-				Begin
-					Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
-					Values (@ID_Publicacion, @ID_Usuario, 3, GETDATE());
-					commit;
-				End
-			Else
-				Begin
-					Print('No existen likes para remover');
-					rollback;
-				End
-		End
-	-- Remover Dislike
-	Else If (@ID_Accion = 4)
-		Begin
-			If (@CantDislikeUsuario > 0)
-				Begin
-					Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
-					Values (@ID_Publicacion, @ID_Usuario, 4, GETDATE());
-					commit;
-				End
-			Else
-				Begin
-					Print('No existen dislikes para remover');
-					rollback;
-				End
-		End
-	-- Insertar Like o Dislike
-	Else If (@ID_Accion = 1 OR @ID_Accion = 2)
-		Begin
-			If (@ID_Accion = 1 OR (@ID_Accion = 2 AND @CantLikeGeneral > @CantDislikeGeneral))
-				Begin
-					If (@CantLikeUsuario = 0 AND @CantDislikeUsuario = 0)
-						Begin
-								Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
-								Values (@ID_Publicacion, @ID_Usuario, @ID_Accion, GETDATE());
-								commit;
-						End
-					Else
-						Begin
-							Print('El usuario ya ha interactuado con la publicacion');
-							rollback;
-						End
-				End
-			Else
-				Begin
-					Print('No existen suficientes likes para insertar un nuevo dislike');
-					rollback;
-				End
+	
+	IF EXISTS (	Select P.ID_USUARIO, A.ID_AMIGO from PUBLICACION P
+				Inner Join AMIGO A on P.ID_USUARIO = A.ID_USUARIO
+				Where ID_PUBLICACION = @ID_Publicacion AND (A.ID_AMIGO = @ID_Usuario OR P.ID_USUARIO = @ID_Usuario) )
+	Begin
+
+		-- Remover Like
+		If (@ID_Accion = 3)
+			Begin
+				If (@CantLikeUsuario > 0)
+					Begin
+						Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
+						Values (@ID_Publicacion, @ID_Usuario, 3, GETDATE());
+						commit;
+					End
+				Else
+					Begin
+						Print('No existen likes para remover');
+						rollback;
+					End
+			End
+		-- Remover Dislike
+		Else If (@ID_Accion = 4)
+			Begin
+				If (@CantDislikeUsuario > 0)
+					Begin
+						Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
+						Values (@ID_Publicacion, @ID_Usuario, 4, GETDATE());
+						commit;
+					End
+				Else
+					Begin
+						Print('No existen dislikes para remover');
+						rollback;
+					End
+			End
+		-- Insertar Like o Dislike
+		Else If (@ID_Accion = 1 OR @ID_Accion = 2)
+			Begin
+				If (@ID_Accion = 1 OR (@ID_Accion = 2 AND @CantLikeGeneral > @CantDislikeGeneral))
+					Begin
+						If (@CantLikeUsuario = 0 AND @CantDislikeUsuario = 0)
+							Begin
+									Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
+									Values (@ID_Publicacion, @ID_Usuario, @ID_Accion, GETDATE());
+									commit;
+							End
+						Else
+							Begin
+								Print('El usuario ya ha interactuado con la publicacion');
+								rollback;
+							End
+					End
+				Else
+					Begin
+						Print('No existen suficientes likes para insertar un nuevo dislike');
+						rollback;
+					End
+			End
+		Else
+			Begin
+				Print('Interaccion no reconocida');
+				rollback;
+			End
 		End
 	Else
 		Begin
-			Print('Interaccion no reconocida');
+			Print('El usuario no se encuentra en la lista de amigos');
 			rollback;
 		End
 End
 
-exec uspIngresarInteraccion 3, 20, 1
+--Pruebas
+
+exec uspIngresarInteraccion 3, 22, 3
 
 Select * from BITACORA
 Where ID_PUBLICACION = 3
 
 Select * from PUBLICACION
+
+Select * from USUARIO
+
+Select * from AMIGO
+
+Insert into AMIGO (ID_USUARIO, ID_AMIGO) Values (20, 21)
+Insert into AMIGO (ID_USUARIO, ID_AMIGO) Values (21, 20)
+
+
+Select P.ID_USUARIO, A.ID_AMIGO 
+from PUBLICACION P
+Inner Join AMIGO A 
+	on P.ID_USUARIO = A.ID_USUARIO
+	Where ID_PUBLICACION = 1
+
+IF EXISTS (Select P.ID_USUARIO, A.ID_AMIGO 
+from PUBLICACION P
+Inner Join AMIGO A 
+	on P.ID_USUARIO = A.ID_USUARIO
+	Where ID_PUBLICACION = 1
+	AND ID_AMIGO = 20)
+	Begin
+		Print('Si existe el amigo')
+	End
+Else 
+	Begin
+		Print('No existe el amigo')
+	End

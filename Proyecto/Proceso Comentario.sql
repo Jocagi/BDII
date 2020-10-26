@@ -15,47 +15,59 @@ Begin
 	Declare @ComentPublicacion integer;
 	Declare @ID_Comentario integer;
 
-	-- Contar cantidad total de comentarios para una publicacion dada
-	Select @ComentPublicacion = COUNT(1)
-	from COMENTARIO
-	Where	ID_PUBLICACION_REF = @ID_Publicacion 
-			AND ACTIVO = 1
+	IF EXISTS (	Select P.ID_USUARIO, A.ID_AMIGO from PUBLICACION P
+				Inner Join AMIGO A on P.ID_USUARIO = A.ID_USUARIO
+				Where ID_PUBLICACION = @ID_Publicacion AND (A.ID_AMIGO = @ID_Usuario OR P.ID_USUARIO = @ID_Usuario) )
+	Begin
 
-	-- Ingresar contenido del comentario
-	Insert Into PUBLICACION (ID_DISPOSITIVO, ID_TIPO_PUBLICACION, ID_USUARIO, FECHA_HORA, CONTENIDO, IP)
-	Values (@ID_Dispositivo, @ID_Tipo, @ID_Usuario, GETDATE(), @Contenido, @IP_Address);
 
-	-- Vlaor del ID comentaario
-	Set @ID_Comentario = SCOPE_IDENTITY();
+		-- Contar cantidad total de comentarios para una publicacion dada
+		Select @ComentPublicacion = COUNT(1)
+		from COMENTARIO
+		Where	ID_PUBLICACION_REF = @ID_Publicacion 
+				AND ACTIVO = 1
 
-	-- Validar activo/inactivo
-	If (@ComentPublicacion < 3)
-		Begin
-			Insert Into COMENTARIO (ID_COMENTARIO, ID_PUBLICACION_REF, ACTIVO)
-			Values (@ID_Comentario, @ID_Publicacion, 1)
-		End
-	Else
-		Begin
-			Insert Into COMENTARIO (ID_COMENTARIO, ID_PUBLICACION_REF, ACTIVO)
-			Values (@ID_Comentario, @ID_Publicacion, 0)
-		End
+		-- Ingresar contenido del comentario
+		Insert Into PUBLICACION (ID_DISPOSITIVO, ID_TIPO_PUBLICACION, ID_USUARIO, FECHA_HORA, CONTENIDO, IP)
+		Values (@ID_Dispositivo, @ID_Tipo, @ID_Usuario, GETDATE(), @Contenido, @IP_Address);
+
+		-- Valor del ID comentaario
+		Set @ID_Comentario = SCOPE_IDENTITY();
+
+		-- Validar activo/inactivo
+		If (@ComentPublicacion < 3)
+			Begin
+				Insert Into COMENTARIO (ID_COMENTARIO, ID_PUBLICACION_REF, ACTIVO)
+				Values (@ID_Comentario, @ID_Publicacion, 1)
+			End
+		Else
+			Begin
+				Insert Into COMENTARIO (ID_COMENTARIO, ID_PUBLICACION_REF, ACTIVO)
+				Values (@ID_Comentario, @ID_Publicacion, 0)
+			End
 	
-	-- Actualizar bitacoria
-	Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
-	Values (@ID_Publicacion, @ID_Usuario, 5, GETDATE())
+		-- Actualizar bitacoria
+		Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
+		Values (@ID_Publicacion, @ID_Usuario, 5, GETDATE())
 
-	If @@ERROR = 0
-		Begin
-			Print('Comentario ingresado con exito');
-			commit;
+		If @@ERROR = 0
+			Begin
+				Print('Comentario ingresado con exito');
+				commit;
+			End
+		Else
+			Begin
+				Print('Error al ingresar comentario');
+				rollback;
+			End
 		End
 	Else
 		Begin
-			Print('Error al ingresar comentario');
+			Print('El usuario no se encuentra en la lista de amigos');
 			rollback;
 		End
 End
 
 Select * from PUBLICACION
 Select * from COMENTARIO
-exec uspIngresarComentario 1, 22, 1, 1, 'Hola Mundo!', '192.168.01.01'
+exec uspIngresarComentario 1, 21, 1, 1, 'Hola Mundo!', '192.168.01.01'
