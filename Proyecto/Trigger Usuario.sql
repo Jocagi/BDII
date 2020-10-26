@@ -71,3 +71,12 @@ Else
 		Print ('No se ha podido realizar la operacion. Maximo de usuarios con el mismo nombre alcanzado.');
 		commit;
 	End
+
+
+--Pruebas
+	Select * from USUARIO;
+
+	Insert into USUARIO
+				(CORREO, NOMBRE1, APELLIDO1, FECHA_DE_NACIMIENT, CONTRASENA, CANT_MAX_AMIGOS, FECHA_CREACION)
+				Values
+				('sdfdjfudfuun@gmail.com', 'Andrea', 'Camara', '2000-01-01', '123', 50, GetDate());

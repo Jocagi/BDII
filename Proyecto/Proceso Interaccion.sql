@@ -5,49 +5,6 @@
 	▪ Nivel de aislamiento 
  */
 
- Insert Into TIPO_ACCION (ACCION) Values ('Like')
- Insert Into TIPO_ACCION (ACCION) Values ('Dislike')
- Insert Into TIPO_ACCION (ACCION) Values ('Removed-Like')
- Insert Into TIPO_ACCION (ACCION) Values ('Removed-Dislike')
- Insert Into TIPO_ACCION (ACCION) Values ('Comment')
- Insert Into TIPO_ACCION (ACCION) Values ('Removed-Comment')
-
- Select * from TIPO_ACCION
-
- Insert Into TIPO_PUBLICACION( TIPO ) Values ('Post')
- Insert Into TIPO_PUBLICACION( TIPO ) Values ('Imagen')
- Insert Into TIPO_PUBLICACION( TIPO ) Values ('Noticia')
-
- Select * from TIPO_PUBLICACION
-
- Insert Into DISPOSITIVO (NOMBRE) Values ('Telefono')
-
- Select * from DISPOSITIVO
-
- Insert into USUARIO
-				(CORREO, NOMBRE1, NOMBRE2, APELLIDO1, APELLIDO2, FECHA_DE_NACIMIENT, CONTRASENA, CANT_MAX_AMIGOS, FECHA_CREACION)
-				Values
-				('josegiron1607@gmail.com', 'Jose', 'Carlos', 'Giron', 'Marquez', '2000-07-16', '123', 50, GetDate());
- 
- Insert into USUARIO
-				(CORREO, NOMBRE1, APELLIDO1, FECHA_DE_NACIMIENT, CONTRASENA, CANT_MAX_AMIGOS, FECHA_CREACION)
-				Values
-				('fhjdkj@gmail.com', 'Andrea', 'Camara', '2000-01-01', '123', 50, GetDate());
- 
-
- Select * from USUARIO
-
- Select * from TIPO_PUBLICACION
-
- Insert Into PUBLICACION (ID_DISPOSITIVO, ID_TIPO_PUBLICACION, ID_USUARIO, FECHA_HORA, CONTENIDO, IP)
- Values (1, 2, 20, GETDATE(), 'URL IMAGEN', '192.168.1.1')
-
- Select * from PUBLICACION
-
- Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
- Values (2, 21, 2, GETDATE())
-
- 
 Create or Alter Procedure uspIngresarInteraccion
 @ID_Publicacion integer,
 @ID_Usuario integer,
@@ -159,38 +116,4 @@ Begin
 End
 
 --Pruebas
-
-exec uspIngresarInteraccion 3, 22, 3
-
-Select * from BITACORA
-Where ID_PUBLICACION = 3
-
-Select * from PUBLICACION
-
-Select * from USUARIO
-
-Select * from AMIGO
-
-Insert into AMIGO (ID_USUARIO, ID_AMIGO) Values (20, 21)
-Insert into AMIGO (ID_USUARIO, ID_AMIGO) Values (21, 20)
-
-
-Select P.ID_USUARIO, A.ID_AMIGO 
-from PUBLICACION P
-Inner Join AMIGO A 
-	on P.ID_USUARIO = A.ID_USUARIO
-	Where ID_PUBLICACION = 1
-
-IF EXISTS (Select P.ID_USUARIO, A.ID_AMIGO 
-from PUBLICACION P
-Inner Join AMIGO A 
-	on P.ID_USUARIO = A.ID_USUARIO
-	Where ID_PUBLICACION = 1
-	AND ID_AMIGO = 20)
-	Begin
-		Print('Si existe el amigo')
-	End
-Else 
-	Begin
-		Print('No existe el amigo')
-	End
+exec uspIngresarInteraccion 3, 23, 1

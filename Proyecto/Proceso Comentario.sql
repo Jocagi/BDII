@@ -46,10 +46,6 @@ Begin
 				Values (@ID_Comentario, @ID_Publicacion, 0)
 			End
 	
-		-- Actualizar bitacoria
-		Insert Into BITACORA (ID_PUBLICACION, ID_USUARIO, ID_TIPO_ACCION, FECHA_HORA)
-		Values (@ID_Publicacion, @ID_Usuario, 5, GETDATE())
-
 		If @@ERROR = 0
 			Begin
 				Print('Comentario ingresado con exito');
@@ -67,6 +63,8 @@ Begin
 			rollback;
 		End
 End
+
+--Pruebas
 
 Select * from PUBLICACION
 Select * from COMENTARIO
